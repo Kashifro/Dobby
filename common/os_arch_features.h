@@ -4,8 +4,6 @@
 #include <stddef.h>
 #include "pac_kit.h"
 
-#include "PlatformUnifiedInterface/platform.h"
-
 #if defined(__arm64e__) && __has_feature(ptrauth_calls)
 #include <ptrauth.h>
 #endif

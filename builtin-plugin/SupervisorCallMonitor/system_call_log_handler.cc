@@ -41,7 +41,7 @@ static addr_t fast_get_caller_from_main_binary(DobbyRegisterContext *ctx) {
   static addr_t slide = 0;
   if (text_section_start == 0 || text_section_end == 0) {
     auto main = ProcessRuntime::getModule("");
-    addr_t main_header = (addr_t)main.load_address;
+    addr_t main_header = (addr_t)main.base;
 
     auto text_segment = macho_kit_get_segment_by_name((mach_header_t *)main_header, "__TEXT");
     slide = main_header - text_segment->load_vmaddr;

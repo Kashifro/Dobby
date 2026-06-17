@@ -145,8 +145,6 @@ set(dobby.SOURCE_FILE_LIST ${dobby.SOURCE_FILE_LIST}
   source/TrampolineBridge/ClosureTrampolineBridge/arm64/helper_arm64.cc
   source/TrampolineBridge/ClosureTrampolineBridge/arm64/closure_bridge_arm64.cc
   source/TrampolineBridge/ClosureTrampolineBridge/arm64/ClosureTrampolineARM64.cc
-  source/TrampolineBridge/ClosureTrampolineBridge/arm64/closure_bridge_arm64.asm
-  source/TrampolineBridge/ClosureTrampolineBridge/arm64/closure_trampoline_arm64.asm
   # closure trampoline bridge - x86
   source/TrampolineBridge/ClosureTrampolineBridge/x86/helper_x86.cc
   source/TrampolineBridge/ClosureTrampolineBridge/x86/closure_bridge_x86.cc
@@ -162,6 +160,22 @@ set(dobby.SOURCE_FILE_LIST ${dobby.SOURCE_FILE_LIST}
 
   # main
   source/dobby.cpp
+  )
+
+# arm64 .asm only assembles on arm64; clang chokes on it otherwise
+if (PROCESSOR.AARCH64)
+  set(dobby.SOURCE_FILE_LIST ${dobby.SOURCE_FILE_LIST}
+    source/TrampolineBridge/ClosureTrampolineBridge/arm64/closure_bridge_arm64.asm
+    source/TrampolineBridge/ClosureTrampolineBridge/arm64/closure_trampoline_arm64.asm
+    )
+endif ()
+
+# x64 .asm use a cdecl() macro that needs the C preprocessor, which clang's
+# integrated assembler skips for .asm by default
+set_source_files_properties(
+  source/TrampolineBridge/ClosureTrampolineBridge/x64/closure_bridge_x64.asm
+  source/TrampolineBridge/ClosureTrampolineBridge/x64/closure_trampoline_x64.asm
+  PROPERTIES COMPILE_FLAGS "-x assembler-with-cpp"
   )
 
 
@@ -342,6 +356,7 @@ endif ()
 
 if (SYSTEM.Android)
   target_link_libraries(dobby log)
+  target_link_libraries(dobby_static log)
   if (PROCESSOR.ARM)
     set_target_properties(dobby
       PROPERTIES

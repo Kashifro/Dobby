@@ -1,6 +1,8 @@
 #pragma once
 
-#include "dobby/common.h"
+#include <cstdarg>
+#include <cstddef>
+#include <cstdint>
 
 namespace base {
 
@@ -89,3 +91,9 @@ public:
 
   static void VPrint(const char *format, va_list args);
 };
+
+// must come last: pulls in dobby/common.h -> common/os_arch_features.h,
+// which uses OSMemory/MemoryPermission declared above. Including this at
+// the top instead causes a circular-include no-op (pragma once) and
+// "undeclared identifier OSMemory" errors.
+#include "dobby/common.h"

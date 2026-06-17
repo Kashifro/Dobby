@@ -9,6 +9,11 @@
 #include "logging/logging.h"
 #include "logging/check_logging.h"
 
+// must precede os_arch_features.h: it uses OSMemory/MemoryPermission,
+// declared in platform.h. (platform.h includes this file back at its own
+// end, after declaring them, so the cycle resolves either way round.)
+#include "PlatformUnifiedInterface/platform.h"
+
 #include "common/os_arch_features.h"
 #include "common/hex_log.h"
 #include "common/pac_kit.h"

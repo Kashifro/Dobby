@@ -79,7 +79,7 @@ void supervisor_call_monitor_register_main_app() {
   for (auto module : module_map) {
     if (strstr(module.path, main_bundle_udid)) {
       INFO_LOG("[supervisor_call_monitor] %s", module.path);
-      supervisor_call_monitor_register_image((void *)module.load_address);
+      supervisor_call_monitor_register_image((void *)module.base);
     }
   }
 }
@@ -102,7 +102,7 @@ return shared_cache_load_addr;
 }
 void supervisor_call_monitor_register_system_kernel() {
   auto libsystem = ProcessRuntime::getModule("libsystem_kernel.dylib");
-  addr_t libsystem_header = (addr_t)libsystem.load_address;
+  addr_t libsystem_header = (addr_t)libsystem.base;
   auto text_section = macho_kit_get_section_by_name((mach_header_t *)libsystem_header, "__TEXT", "__text");
 
   addr_t shared_cache_load_addr = (addr_t)shared_cache_get_load_addr();
